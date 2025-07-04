@@ -80,4 +80,6 @@ The other confusingly named repo has no relation to this one. You can [read the 
 
 ## My notes
 
+choco install unzip ripgrep fzf -y
 git push --no-verify
+scroll with page up and page down, not the mouse wheen
