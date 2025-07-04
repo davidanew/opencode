@@ -6,3 +6,4 @@ node_modules
 .idea
 .vscode
 openapi.json
+.claude/settings.local.json
