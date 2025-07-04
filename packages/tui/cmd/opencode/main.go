@@ -12,7 +12,9 @@ import (
 	"github.com/sst/opencode-sdk-go"
 	"github.com/sst/opencode-sdk-go/option"
 	"github.com/sst/opencode/internal/app"
+	"github.com/sst/opencode/internal/layout"
 	"github.com/sst/opencode/internal/tui"
+	"golang.org/x/term"
 )
 
 var Version = "dev"
@@ -68,6 +70,13 @@ func main() {
 	app_, err := app.New(ctx, version, appInfo, httpClient)
 	if err != nil {
 		panic(err)
+	}
+
+	// Get actual terminal size and set it before creating the model
+	if width, height, err := term.GetSize(int(os.Stdout.Fd())); err == nil {
+		layout.Current.Viewport.Width = width
+		layout.Current.Viewport.Height = height
+		layout.Current.Container.Width = width
 	}
 
 	program := tea.NewProgram(
