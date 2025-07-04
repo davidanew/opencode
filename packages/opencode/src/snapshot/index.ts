@@ -46,8 +46,26 @@ export namespace Snapshot {
     log.info("commit")
 
     // Extract commit hash from output like "[main abc1234] snapshot"
-    const match = result.stdout.toString().match(/\[.+ ([a-f0-9]+)\]/)
-    if (!match) throw new Error("Failed to extract commit hash")
+    const output = result.stdout.toString()
+    log.info("git commit output", { output, stderr: result.stderr.toString() })
+    
+    const match = output.match(/\[.+ ([a-f0-9]+)\]/)
+    if (!match) {
+      // Fallback: get commit hash with git rev-parse
+      try {
+        const hashResult = await $`git --git-dir ${git} rev-parse HEAD`
+          .quiet()
+          .cwd(app.path.cwd)
+          .nothrow()
+        const hash = hashResult.stdout.toString().trim()
+        if (hash && hash.length >= 7) {
+          return hash.substring(0, 7)
+        }
+      } catch (e) {
+        log.error("Failed to get commit hash with rev-parse", { error: e })
+      }
+      throw new Error(`Failed to extract commit hash from: ${output}`)
+    }
     return match[1]
   }
 
