@@ -68,6 +68,8 @@ func (m *messagesComponent) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 	case app.OptimisticMessageAddedMsg:
 		m.renderView(m.width)
+		// Force viewport to recalculate after content update
+		m.viewport.SetWidth(m.width)
 		if m.tail {
 			m.viewport.GotoBottom()
 		}
@@ -95,6 +97,8 @@ func (m *messagesComponent) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case opencode.EventListResponseEventSessionUpdated:
 		if msg.Properties.Info.ID == m.app.Session.ID {
 			m.renderView(m.width)
+			// Force viewport to recalculate after content update
+			m.viewport.SetWidth(m.width)
 			if m.tail {
 				m.viewport.GotoBottom()
 			}
@@ -102,6 +106,8 @@ func (m *messagesComponent) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case opencode.EventListResponseEventMessageUpdated:
 		if msg.Properties.Info.Metadata.SessionID == m.app.Session.ID {
 			m.renderView(m.width)
+			// Force viewport to recalculate after content update
+			m.viewport.SetWidth(m.width)
 			if m.tail {
 				m.viewport.GotoBottom()
 			}
